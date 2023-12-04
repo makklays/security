@@ -1,2 +1,68 @@
 
-// Настройка firewall в Ubuntu с помощью утилиты UFW
+Настройка firewall в Ubuntu с помощью утилиты UFW
+
+ufw – инструмент для настройки сетевой защиты Ubuntu. Он разработан для легкой настройки iptables и предоставляет дружественный способ создания сетевой защиты для IPv4 и IPv6.
+
+Примеры использования ufw
+
+1. Для начала требуется разрешить ufw. Наберите в терминале:
+# sudo ufw enable
+Если его не оказалось на сервере (версия старая или по другим причинам), то для установки нужно выполнить команду:
+# sudo apt-get install ufw
+
+2. Открыть порт (в данном примере SSH):
+# sudo ufw allow 22
+
+3. Правила могут быть добавлены с использованием нумерованного формата:
+# sudo ufw insert 1 allow 80
+
+4. Подобным образом можно закрыть открытый порт:
+# sudo ufw deny 22
+
+5. Для удаления правила используйте delete:
+# sudo ufw delete deny 22
+
+6. Также можно разрешить доступ к порту с определенных компьютеров или сетей. Следующий пример разрешает на этом компьютере доступ по SSH с адреса 192.168.0.2 на любой IP-адрес:
+# sudo ufw allow proto tcp from 192.168.0.2 to any port 22
+Замените 192.168.0.2 на 192.168.0.0/24 чтобы разрешить доступ по SSH для всей подсети.
+
+7. Добавление опции —dry-run команде ufw выведет список правил, но не применит их. Например, далее показано, что было бы применено, если открыть HTTP-порт:
+# sudo ufw --dry-run allow http
+
+*filter
+:ufw-user-input — [0:0]
+:ufw-user-output — [0:0]
+:ufw-user-forward — [0:0]
+:ufw-user-limit — [0:0]
+:ufw-user-limit-accept — [0:0]
+### RULES ###
+### tuple ### allow tcp 80 0.0.0.0/0 any 0.0.0.0/0
+-A ufw-user-input -p tcp —dport 80 -j ACCEPT
+### END RULES ###
+-A ufw-user-input -j RETURN
+-A ufw-user-output -j RETURN
+-A ufw-user-forward -j RETURN >
+-A ufw-user-limit -m limit —limit 3/minute -j LOG —log-prefix «[UFW LIMIT]: »
+-A ufw-user-limit -j REJECT
+-A ufw-user-limit-accept -j ACCEPT
+COMMIT
+Rules updated 
+
+8. ufw можно выключить командой:
+# sudo ufw disable
+Отключение firewall в Ubuntu можно выполнить этой командой (UFW — это Uncomplicated Firewall).
+
+9. Чтобы посмотреть статус сетевой защиты:
+# sudo ufw status
+
+
+
+
+
+
+
+
+
+
+
+
